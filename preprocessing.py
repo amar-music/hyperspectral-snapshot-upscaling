@@ -29,8 +29,6 @@ def preprocessHrHSI(path_to_hdf5, mtx_path, dist_path, print_info = False):
         # get the dataset from the file (this is how we save the objects downstairs)
         dataset = f['hypercube']
         hcube = f['hypercube'][:]
-
-        # return hcube, np.array(dataset.attrs['wavelength_nm'])
         
         # Normalize hypercube
         hcube = hcube / np.max(hcube)
@@ -152,3 +150,50 @@ def previewSnapshot(img, wavelengths, selected_pixel, selected_spectrum):
     plt.title('Spectral Composition of Pixel ' + str(selected_pixel))
     plt.axvline(wavelengths[selected_spectrum], color='r', linestyle='-')
     plt.show()
+
+
+
+# Full preprocessing of hrHSI file
+def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path):
+    # Open the HDF5 file
+    with h5py.File(path_to_hdf5, 'r') as f:
+
+        # get the dataset from the file (this is how we save the objects downstairs)
+        dataset = f['hypercube']
+        hcube = f['hypercube'][:]
+        
+        # Normalize hypercube
+        hcube = hcube / np.max(hcube)
+
+        # Flip hypercube to align with snapshot
+        hcube = np.flip(hcube, axis=1)
+        hcube = np.flip(hcube, axis=2)
+
+        # Rearrange hypercube to be in the shape of (x, y, wavelength)
+        hcube = np.moveaxis(hcube, 0, -1)
+
+        # Load wavelengths as integers
+        wavelengths = np.array(dataset.attrs['wavelength_nm']).astype(int)
+        wavelengths = wavelengths.tolist()
+
+
+        # Load camera matrix
+        mtx = np.load(mtx_path)
+        dist = np.load(dist_path)
+
+
+
+        # Undistort the hypercube
+        h, w = hcube.shape[:2]
+        newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+
+        # Undistort
+        dst = cv.undistort(hcube, mtx, dist, None, newcameramtx)
+
+ 
+        # crop the image
+        x, y, w, h = roi
+        dst = dst[y:y+h, x:x+w]
+
+
+        return dst, wavelengths
