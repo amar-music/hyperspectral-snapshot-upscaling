@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import cv2 as cv
 import spectral.io.envi as envi
+from scipy import ndimage
 
 
 # hrHSI preprocessing
@@ -154,7 +155,7 @@ def previewSnapshot(img, wavelengths, selected_pixel, selected_spectrum):
 
 
 # Full preprocessing of hrHSI file
-def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path):
+def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, ss_wavelengths):
     # Open the HDF5 file
     with h5py.File(path_to_hdf5, 'r') as f:
 
@@ -196,4 +197,26 @@ def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path):
         dst = dst[y:y+h, x:x+w]
 
 
-        return dst, wavelengths
+        # return dst, wavelengths
+
+        # Select only wavelenghts that appear in the snapshot
+        wavelengths_idx = []
+        for i in range(len(ss_wavelengths)):
+            idx = (np.abs(np.array(wavelengths) - np.array(ss_wavelengths[i]))).argmin()
+            wavelengths_idx.append(idx)
+
+        # Filter hr_wavelenghts by index hr_wavelegths_idx
+        hwavelengths_filtered = [wavelengths[i] for i in wavelengths_idx]
+
+        dst = dst[:, :, wavelengths_idx]
+
+
+        # Crop hrHSI to match snapshot
+        dst_cropped = dst[y_off[0]:y_off[1], x_off[0]:x_off[1], :]
+
+
+        # Rotate hrHSI
+        dst_cropped_rotated = ndimage.rotate(dst_cropped, angle=rot, reshape=False)
+
+
+        return dst_cropped_rotated, hwavelengths_filtered
