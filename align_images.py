@@ -7,13 +7,16 @@ def align_images(hr_img, ss_img, x_off, y_off, hr_rot, ss_rot):
     # Crop hrHSI to match snapshot
     hr_img_cropped = hr_img[y_off[0]:y_off[1], x_off[0]:x_off[1], :]
 
+    # Stretch hrHSI
+    hr_img_cropped_stretched = hr_img_cropped.ndimage.resize(hr_img_cropped, ss_img.shape[:2])
+
     # Rotate hrHSI
-    hr_img_cropped_rotated = ndimage.rotate(hr_img_cropped, angle=hr_rot, reshape=False)
+    hr_img_cropped_stretched_rotated = ndimage.rotate(hr_img_cropped_stretched, angle=hr_rot, reshape=False)
 
     # Rotate snapshot 
     ss_img_rotated = ndimage.rotate(ss_img, angle=ss_rot, reshape=True) # reshape=True to maintain resolution
 
-    return hr_img_cropped_rotated, ss_img_rotated
+    return hr_img_cropped_stretched_rotated, ss_img_rotated
 
 
 

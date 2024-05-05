@@ -22,9 +22,9 @@ ss_wavelengths = [667, 679, 691, 703, 715,
 
 
 # Specify the offset and rotation
-x_off = (70, 995)   # Full: (0, 1084)
-y_off = (200, 720)   # Full: (0, 1015)
-rot = 0.7
+x_off = (85, 1020)   # Full: (0, 1084)
+y_off = (195, 710)   # Full: (0, 1015)
+rot = 0.2
 
 
 for f in hdf5_files:
