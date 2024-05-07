@@ -1,22 +1,25 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import ndimage
+from skimage import transform
 
-def align_images(hr_img, ss_img, x_off, y_off, hr_rot, ss_rot):
+def align_images(hr_img, ss_img, x_off, y_off, rot, shear):
 
-    # Crop hrHSI to match snapshot
-    hr_img_cropped = hr_img[y_off[0]:y_off[1], x_off[0]:x_off[1], :]
-
-    # Stretch hrHSI
-    hr_img_cropped_stretched = hr_img_cropped.ndimage.resize(hr_img_cropped, ss_img.shape[:2])
+    # Shear image
+    tform = transform.AffineTransform(shear=shear)
+    hr_img = transform.warp(hr_img, tform)
 
     # Rotate hrHSI
-    hr_img_cropped_stretched_rotated = ndimage.rotate(hr_img_cropped_stretched, angle=hr_rot, reshape=False)
+    hr_img = ndimage.rotate(hr_img, angle=rot, reshape=False)
 
-    # Rotate snapshot 
-    ss_img_rotated = ndimage.rotate(ss_img, angle=ss_rot, reshape=True) # reshape=True to maintain resolution
+    # Crop hrHSI to match snapshot
+    hr_img = hr_img[y_off[0]:y_off[1], x_off[0]:x_off[1], :]
 
-    return hr_img_cropped_stretched_rotated, ss_img_rotated
+    # Stretch hrHSI to match snapshot aspect ratio
+    new_y = ((ss_img.shape[0] / ss_img.shape[1]) * hr_img.shape[1])
+    hr_img = transform.resize(hr_img, (new_y, hr_img.shape[1], hr_img.shape[2]), order=1)
+
+    return hr_img, ss_img
 
 
 

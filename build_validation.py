@@ -4,16 +4,17 @@ import glob
 import numpy as np
 
 # Load all hdf5 files in a directory
-hdf5_files = glob.glob('data/FX10/*.hdf5')
+# hdf5_files = glob.glob('data/FX10/*.hdf5')
 
 # Load 1 hdf5 file as test
-# hdf5_files = ['data/FX10/spelt1.hdf5']
+hdf5_files = ['data/FX10/spelt1_l.hdf5']
 
 # Specify camera calibration files
 mtx_path = 'data/FX10/2D/hrHSI_matrix.npy'
 dist_path = 'data/FX10/2D/hrHSI_dist.npy'
 
-# Snapshot wavelengths
+# Snapshot dimensions and wavelengths
+ss_shape = (213, 405, 24)
 ss_wavelengths = [667, 679, 691, 703, 715, 
                   727, 739, 751, 763, 775, 
                   787, 799, 811, 823, 835, 
@@ -21,10 +22,11 @@ ss_wavelengths = [667, 679, 691, 703, 715,
                   907, 919, 931, 943]
 
 
-# Specify the offset and rotation
-x_off = (85, 1020)   # Full: (0, 1084)
-y_off = (195, 710)   # Full: (0, 1015)
-rot = 0.2
+# Set offsets and rotations
+x_off = (104, 1019)   # Full: (0, 1084)
+y_off = (189, 720)   # Full: (0, 1015)
+rot = -0.2
+shear = 0.017
 
 
 for f in hdf5_files:
@@ -34,7 +36,9 @@ for f in hdf5_files:
                                                    dist_path=dist_path, 
                                                    x_off=x_off, 
                                                    y_off=y_off, 
-                                                   rot=rot, 
+                                                   rot=rot,
+                                                   shear=shear,
+                                                   ss_shape=ss_shape, 
                                                    ss_wavelengths=ss_wavelengths)
 
     # Save as array

@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import cv2 as cv
 import spectral.io.envi as envi
 from scipy import ndimage
+import glob
+from skimage import transform
 
 
 # hrHSI preprocessing
@@ -96,7 +98,7 @@ def previewHrHSI(img, wavelengths, selected_pixel, selected_spectrum):
 def preprocessSnapshot(ss_path, mtx_path, dist_path):
 
     # Open image
-    ss_file = envi.open(ss_path + "image_0000000000.hdr", ss_path + "image_0000000000.raw")
+    ss_file = envi.open(glob.glob(ss_path + ("*.hdr"))[0], glob.glob(ss_path + "*.raw")[0])
 
     # Load as numpy array
     ss_img = np.array(ss_file.load())
@@ -155,7 +157,7 @@ def previewSnapshot(img, wavelengths, selected_pixel, selected_spectrum):
 
 
 # Full preprocessing of hrHSI file
-def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, ss_wavelengths):
+def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, shear, ss_shape, ss_wavelengths):
     # Open the HDF5 file
     with h5py.File(path_to_hdf5, 'r') as f:
 
@@ -187,17 +189,12 @@ def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, ss_w
         # Undistort the hypercube
         h, w = hcube.shape[:2]
         newcameramtx, roi = cv.getOptimalNewCameraMatrix(mtx, dist, (w,h), 1, (w,h))
+        img = cv.undistort(hcube, mtx, dist, None, newcameramtx)
 
-        # Undistort
-        dst = cv.undistort(hcube, mtx, dist, None, newcameramtx)
-
- 
-        # crop the image
+        # Crop the image
         x, y, w, h = roi
-        dst = dst[y:y+h, x:x+w]
+        img = img[y:y+h, x:x+w]
 
-
-        # return dst, wavelengths
 
         # Select only wavelenghts that appear in the snapshot
         wavelengths_idx = []
@@ -205,18 +202,26 @@ def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, ss_w
             idx = (np.abs(np.array(wavelengths) - np.array(ss_wavelengths[i]))).argmin()
             wavelengths_idx.append(idx)
 
-        # Filter hr_wavelenghts by index hr_wavelegths_idx
+        # Store the selected wavelength values
         hwavelengths_filtered = [wavelengths[i] for i in wavelengths_idx]
 
-        dst = dst[:, :, wavelengths_idx]
+        # Select the 24 wavelenghts
+        img = img[:, :, wavelengths_idx]
 
 
-        # Crop hrHSI to match snapshot
-        dst_cropped = dst[y_off[0]:y_off[1], x_off[0]:x_off[1], :]
-
+        # Shear image
+        tform = transform.AffineTransform(shear=shear)
+        img = transform.warp(img, tform)
 
         # Rotate hrHSI
-        dst_cropped_rotated = ndimage.rotate(dst_cropped, angle=rot, reshape=False)
+        img = ndimage.rotate(img, angle=rot, reshape=False)
+
+        # Crop hrHSI to match snapshot
+        img = img[y_off[0]:y_off[1], x_off[0]:x_off[1], :]
+
+        # Stretch hrHSI to match snapshot aspect ratio
+        new_y = ((ss_shape[0] / ss_shape[1]) * img.shape[1])
+        img = transform.resize(img, (new_y, img.shape[1], img.shape[2]), order=1)
 
 
-        return dst_cropped_rotated, hwavelengths_filtered
+        return img, hwavelengths_filtered
