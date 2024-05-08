@@ -104,7 +104,8 @@ def preprocessSnapshot(ss_path, mtx_path, dist_path):
     ss_img = np.array(ss_file.load())
 
     # Normalize image
-    hcube = ss_img / np.max(ss_img)
+    # hcube = ss_img / np.max(ss_img)
+    hcube = ss_img
 
     # Load wavelengths
     wavelengths = ss_file.metadata['wavelength']
@@ -125,10 +126,12 @@ def preprocessSnapshot(ss_path, mtx_path, dist_path):
     # Undistort
     dst = cv.undistort(hcube, mtx, dist, None, newcameramtx)
 
-
     # Crop the image
     x, y, w, h = roi
     dst = dst[y:y+h, x:x+w]
+
+    # Normalize hypercube
+    dst = dst / np.max(dst)
 
     return dst, wavelengths
 
@@ -166,8 +169,8 @@ def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, shea
         dataset = f['hypercube']
         hcube = f['hypercube'][:]
         
-        # Normalize hypercube
-        hcube = hcube / np.max(hcube)
+        # # Normalize hypercube
+        # hcube = hcube / np.max(hcube)
 
         # Flip hypercube to align with snapshot
         hcube = np.flip(hcube, axis=1)
@@ -224,5 +227,7 @@ def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, shea
         new_y = ((ss_shape[0] / ss_shape[1]) * img.shape[1])
         img = transform.resize(img, (new_y, img.shape[1], img.shape[2]), order=1)
 
+        # Normalize hypercube
+        img = img / np.max(img)
 
         return img, hwavelengths_filtered
