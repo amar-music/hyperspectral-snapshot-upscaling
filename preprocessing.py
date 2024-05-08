@@ -125,7 +125,8 @@ def preprocessSnapshot(ss_path, mtx_path, dist_path):
     # Undistort
     dst = cv.undistort(hcube, mtx, dist, None, newcameramtx)
 
-    # crop the image
+
+    # Crop the image
     x, y, w, h = roi
     dst = dst[y:y+h, x:x+w]
 
