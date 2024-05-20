@@ -56,6 +56,7 @@ def plot_image_comparison(hr_img, hr_wavelengths, ss_img, ss_wavelengths, select
     plt.plot(ss_wavelengths, ss_img[selected_pixel[0], selected_pixel[1], :])
     plt.xlabel('Wavelength (nm)')
     plt.ylabel('Intensity')
+    plt.ylim(0, 1)
     plt.title('Spectral Composition of Pixel ' + str(selected_pixel))
     plt.legend(['High Resolution HSI', 'Snapshot'])
     plt.axvline(selected_spectrum, color='r', linestyle='-')

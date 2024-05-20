@@ -1,4 +1,7 @@
 .venv/
 data/
 __pycache__/
-calibrations/
+*.hdf5
+*.jpg
+calibration/Snapshot/processed/*
+calibration/Snapshot/unprocessed/*
