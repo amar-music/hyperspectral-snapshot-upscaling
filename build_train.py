@@ -2,12 +2,10 @@
 from preprocessing import preprocessSnapshot
 import glob
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 # Specify paths
 ss_files = glob.glob("data/Snapshot/processed/train/**/")
-# ss_files = glob.glob("data/Snapshot/processed/train/barley_s4/")
 
 # Specify camera calibration files
 mtx_path = 'calibration/snapshot_matrix.npy'
