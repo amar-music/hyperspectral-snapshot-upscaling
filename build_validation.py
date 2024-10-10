@@ -14,7 +14,7 @@ mtx_path = 'calibration/hrHSI_matrix.npy'
 dist_path = 'calibration/hrHSI_dist.npy'
 
 # Snapshot dimensions and wavelengths
-ss_shape = (214, 405, 24)
+ss_shape = (210, 399, 24)
 ss_wavelengths = [667, 679, 691, 703, 715, 
                   727, 739, 751, 763, 775, 
                   787, 799, 811, 823, 835, 
@@ -23,8 +23,8 @@ ss_wavelengths = [667, 679, 691, 703, 715,
 
 
 # Set offsets and rotations
-x_off = (104, 1019)   # Full: (0, 1084)
-y_off = (189, 720)   # Full: (0, 1015)
+hr_x_off = (106, 1018)   # Full: (0, 1084)
+hr_y_off = (189, 720)   # Full: (0, 1015)
 rot = -0.2
 shear = 0.017
 
@@ -34,8 +34,8 @@ for f in hdf5_files:
     processed_img, wavelengths = preprocessFullHSI(path_to_hdf5=f, 
                                                    mtx_path=mtx_path, 
                                                    dist_path=dist_path, 
-                                                   x_off=x_off, 
-                                                   y_off=y_off, 
+                                                   hr_x_off=hr_x_off, 
+                                                   hr_y_off=hr_y_off, 
                                                    rot=rot,
                                                    shear=shear,
                                                    ss_shape=ss_shape, 

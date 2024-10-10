@@ -95,7 +95,7 @@ def previewHrHSI(img, wavelengths, selected_pixel, selected_spectrum):
 
 
 # Snapshot preprocessing
-def preprocessSnapshot(ss_path, mtx_path, dist_path):
+def preprocessSnapshot(ss_path, mtx_path, dist_path, ss_x_off, ss_y_off):
 
     # Open image
     ss_file = envi.open(glob.glob(ss_path + ("*.hdr"))[0], glob.glob(ss_path + "*.raw")[0])
@@ -133,6 +133,9 @@ def preprocessSnapshot(ss_path, mtx_path, dist_path):
     # Normalize hypercube
     dst = dst / np.max(dst)
 
+    # Crop the image for 1.9 aspect ratio
+    dst = dst[ss_y_off[0]:ss_y_off[1], ss_x_off[0]:ss_x_off[1], :]
+
     return dst, wavelengths
 
 
@@ -161,7 +164,7 @@ def previewSnapshot(img, wavelengths, selected_pixel, selected_spectrum):
 
 
 # Full preprocessing of hrHSI file
-def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, shear, ss_shape, ss_wavelengths):
+def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, hr_x_off, hr_y_off, rot, shear, ss_shape, ss_wavelengths):
     # Open the HDF5 file
     with h5py.File(path_to_hdf5, 'r') as f:
 
@@ -221,7 +224,7 @@ def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, x_off, y_off, rot, shea
         img = ndimage.rotate(img, angle=rot, reshape=False)
 
         # Crop hrHSI to match snapshot
-        img = img[y_off[0]:y_off[1], x_off[0]:x_off[1], :]
+        img = img[hr_y_off[0]:hr_y_off[1], hr_x_off[0]:hr_x_off[1], :]
 
         # Stretch hrHSI to match snapshot aspect ratio
         new_y = ((ss_shape[0] / ss_shape[1]) * img.shape[1])

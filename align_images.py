@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy import ndimage
 from skimage import transform
 
-def align_images(hr_img, ss_img, x_off, y_off, rot, shear):
+def align_images(hr_img, ss_img, ss_x_off, ss_y_off, hr_x_off, hr_y_off, rot, shear):
 
     # Shear image
     tform = transform.AffineTransform(shear=shear)
@@ -12,8 +12,11 @@ def align_images(hr_img, ss_img, x_off, y_off, rot, shear):
     # Rotate hrHSI
     hr_img = ndimage.rotate(hr_img, angle=rot, reshape=False)
 
+    # Crop snapshot to match 1.9 ratio
+    ss_img = ss_img[ss_y_off[0]:ss_y_off[1], ss_x_off[0]:ss_x_off[1], :]
+
     # Crop hrHSI to match snapshot
-    hr_img = hr_img[y_off[0]:y_off[1], x_off[0]:x_off[1], :]
+    hr_img = hr_img[hr_y_off[0]:hr_y_off[1], hr_x_off[0]:hr_x_off[1], :]
 
     # Stretch hrHSI to match snapshot aspect ratio
     new_y = ((ss_img.shape[0] / ss_img.shape[1]) * hr_img.shape[1])
