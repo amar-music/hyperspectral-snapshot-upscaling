@@ -3,6 +3,8 @@ from preprocessing import preprocessFullHSI
 import glob
 import numpy as np
 
+SQUARE = True
+
 # Load all hdf5 files in a directory
 hdf5_files = glob.glob('data/FX10/*.hdf5')
 
@@ -13,20 +15,32 @@ hdf5_files = glob.glob('data/FX10/*.hdf5')
 mtx_path = 'calibration/hrHSI_matrix.npy'
 dist_path = 'calibration/hrHSI_dist.npy'
 
-# Snapshot dimensions and wavelengths
-ss_shape = (210, 399, 24)
+# Snapshot wavelengths
 ss_wavelengths = [667, 679, 691, 703, 715, 
-                  727, 739, 751, 763, 775, 
-                  787, 799, 811, 823, 835, 
-                  847, 859, 871, 883, 895, 
-                  907, 919, 931, 943]
+                727, 739, 751, 763, 775, 
+                787, 799, 811, 823, 835, 
+                847, 859, 871, 883, 895, 
+                907, 919, 931, 943]
 
+if SQUARE == True:
+    # Snapshot dimensions
+    ss_shape = (210, 210, 24)
 
-# Set offsets and rotations
-hr_x_off = (106, 1018)   # Full: (0, 1084)
-hr_y_off = (189, 720)   # Full: (0, 1015)
-rot = -0.2
-shear = 0.017
+    # Set offsets and rotations
+    hr_x_off = (110, 590)   # Square
+    hr_y_off = (191, 719)   # Square
+    rot = -0.3
+    shear = 0.02
+
+else:
+    # Snapshot dimensions
+    ss_shape = (210, 399, 24)
+
+    # Set offsets and rotations
+    hr_x_off = (106, 1018)   # Full: (0, 1084)
+    hr_y_off = (189, 720)   # Full: (0, 1015)
+    rot = -0.2
+    shear = 0.017
 
 
 for f in hdf5_files:

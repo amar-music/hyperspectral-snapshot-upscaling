@@ -3,6 +3,7 @@ from preprocessing import preprocessSnapshot
 import glob
 import numpy as np
 
+SQUARE = True
 
 # Specify paths
 ss_files = glob.glob("data/Snapshot/processed/train/**/")
@@ -10,9 +11,15 @@ ss_files = glob.glob("data/Snapshot/processed/train/**/")
 # Specify camera calibration files
 mtx_path = 'calibration/snapshot_matrix.npy'
 dist_path = 'calibration/snapshot_dist.npy'
-ss_x_off = (3, 402)
-ss_y_off = (2, 212)
 
+
+if SQUARE == True:
+    ss_x_off = (3, 213)
+    ss_y_off = (2, 212)
+
+else:
+    ss_x_off = (3, 402)
+    ss_y_off = (2, 212)
 
 
 for f in ss_files:
