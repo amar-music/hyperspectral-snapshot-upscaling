@@ -5,3 +5,7 @@ __pycache__/
 *.jpg
 calibration/Snapshot/processed/*
 calibration/Snapshot/unprocessed/*
+Real-ESRGAN/experiments/*
+Real-ESRGAN/tb_logger/*
+*.pth
+commands.txt
