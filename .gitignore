@@ -9,3 +9,6 @@ Real-ESRGAN/experiments/*
 Real-ESRGAN/tb_logger/*
 *.pth
 commands.txt
+*.npy
+*.csv
+*.txt
