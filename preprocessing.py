@@ -130,11 +130,11 @@ def preprocessSnapshot(ss_path, mtx_path, dist_path, ss_x_off, ss_y_off):
     x, y, w, h = roi
     dst = dst[y:y+h, x:x+w]
 
-    # Normalize hypercube
-    dst = dst / np.max(dst)
-
     # Crop the image for 1.9 aspect ratio
     dst = dst[ss_y_off[0]:ss_y_off[1], ss_x_off[0]:ss_x_off[1], :]
+
+    # Normalize hypercube to [0, 1]
+    dst = (dst - np.min(dst)) / (np.max(dst) - np.min(dst))
 
     return dst, wavelengths
 
@@ -230,7 +230,7 @@ def preprocessFullHSI(path_to_hdf5, mtx_path, dist_path, hr_x_off, hr_y_off, rot
         new_y = ((ss_shape[0] / ss_shape[1]) * img.shape[1])
         img = transform.resize(img, (new_y, img.shape[1], img.shape[2]), order=1)
 
-        # Normalize hypercube
-        img = img / np.max(img)
+        # Normalize hypercube to [0, 1]
+        img = (img - np.min(img)) / (np.max(img) - np.min(img))
 
         return img, hwavelengths_filtered

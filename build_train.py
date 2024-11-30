@@ -6,11 +6,11 @@ import numpy as np
 SQUARE = True
 
 # Specify paths
-ss_files = glob.glob("data/Snapshot/processed/train/**/")
+ss_files = glob.glob("data/raw/Snapshot/processed/train/**/")
 
 # Specify camera calibration files
-mtx_path = 'calibration/snapshot_matrix.npy'
-dist_path = 'calibration/snapshot_dist.npy'
+mtx_path = 'data/raw/calibration/snapshot_matrix.npy'
+dist_path = 'data/raw/calibration/snapshot_dist.npy'
 
 
 if SQUARE == True:
@@ -31,4 +31,4 @@ for f in ss_files:
                                                     ss_y_off=ss_y_off)
 
     # Save as array
-    np.save("data/Processed/train/" + f[30:-1] + ".npy", processed_img)
+    np.save("data/processed/full_hsi/lr/" + f[34:-1] + ".npy", processed_img)

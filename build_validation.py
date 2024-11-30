@@ -6,14 +6,14 @@ import numpy as np
 SQUARE = True
 
 # Load all hdf5 files in a directory
-hdf5_files = glob.glob('data/FX10/*.hdf5')
+hdf5_files = glob.glob('data/raw/FX10/*.hdf5')
 
 # Load 1 hdf5 file as test
 # hdf5_files = ['data/FX10/spelt1_l.hdf5']
 
 # Specify camera calibration files
-mtx_path = 'calibration/hrHSI_matrix.npy'
-dist_path = 'calibration/hrHSI_dist.npy'
+mtx_path = 'data/raw/calibration/hrHSI_matrix.npy'
+dist_path = 'data/raw/calibration/hrHSI_dist.npy'
 
 # Snapshot wavelengths
 ss_wavelengths = [667, 679, 691, 703, 715, 
@@ -56,7 +56,7 @@ for f in hdf5_files:
                                                    ss_wavelengths=ss_wavelengths)
 
     # Save as array
-    np.save("data/Processed/val/" + f[10:-5] + ".npy", processed_img)
+    np.save("data/processed/full_hsi/hr/" + f[14:-5] + ".npy", processed_img)
 
 
 hr_wavelenghts = [666, 679, 690, 704, 715, 
