@@ -4,6 +4,7 @@ import glob
 import os
 from basicsr.archs.rrdbnet_arch import RRDBNet
 from basicsr.utils.download_util import load_file_from_url
+import numpy as np
 import sys
 
 from realesrgan import RealESRGANer
@@ -90,8 +91,24 @@ def main():
     #     model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
     #     netscale = 2
     #     file_url = ['none']
-    if args.model_name == 'HSI_grayimages_x2_5000':  # x2 HSI
+    if args.model_name == 'RealESRGAN_x2plus':  # x2 RRDBNet model
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_grayimages_x2_5000':  # x2 HSI
+        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_rgbarray_x2_5000':  # x2 HSI
+        model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_50000':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_50000_synth':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
         netscale = 2
         file_url = ['none']
 
@@ -146,11 +163,20 @@ def main():
         imgname, extension = os.path.splitext(os.path.basename(path))
         print('Testing', idx, imgname)
 
-        img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
-        if len(img.shape) == 3 and img.shape[2] == 4:
-            img_mode = 'RGBA'
+        
+        # Check if extension is .npy
+        if extension == '.npy':
+            img = np.load(path) * 255.
+            img_mode = "numpy"
+        elif extension == '.jpg':
+            img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+            img_mode = 'jpg'
         else:
             img_mode = None
+
+        # image shape
+        # Save loaded image
+        # cv2.imwrite("loaded_image.jpg", img)
 
         try:
             if args.face_enhance:
@@ -167,11 +193,20 @@ def main():
                 extension = args.ext
             if img_mode == 'RGBA':  # RGBA images should be saved in png format
                 extension = 'png'
+            elif img_mode == 'jpg':
+                extension = 'jpg'
+            elif img_mode == 'numpy':
+                extension = 'npy'
+                output = output / 255.
             if args.suffix == '':
                 save_path = os.path.join(args.output, f'{imgname}.{extension}')
             else:
                 save_path = os.path.join(args.output, f'{imgname}_{args.suffix}.{extension}')
-            cv2.imwrite(save_path, output)
+
+            # Save numpy array
+            np.save(save_path, output)
+
+            # cv2.imwrite(save_path, output)
 
 
 if __name__ == '__main__':

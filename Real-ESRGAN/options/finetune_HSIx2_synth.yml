@@ -1,5 +1,5 @@
 # general settings
-name: finetune_rgbarray_x2
+name: finetune_HSIx2_synth
 model_type: RealESRGANModel
 scale: 2
 num_gpu: auto
@@ -17,9 +17,9 @@ datasets:
   train:
     name: HSI
     type: RealESRGANPairedDataset
-    dataroot_gt: data/processed/rgb_array
-    dataroot_lq: data/processed/rgb_array
-    meta_info: data/processed/rgb_array/meta_info_rgb_array.txt
+    dataroot_gt: data/processed/full_hsi
+    dataroot_lq: data/processed/full_hsi
+    meta_info: data/processed/full_hsi/meta_info_hsi_synth.txt
     io_backend:
       type: disk
 
@@ -48,15 +48,15 @@ datasets:
 network_g:
   scale: 2
   type: RRDBNet
-  num_in_ch: 3
-  num_out_ch: 3
+  num_in_ch: 24
+  num_out_ch: 24
   num_feat: 64
   num_block: 23
   num_grow_ch: 32
 
 network_d:
   type: UNetDiscriminatorSN
-  num_in_ch: 3
+  num_in_ch: 24
   num_feat: 64
   skip_connection: True
 
@@ -88,11 +88,13 @@ train:
   scheduler:
     type: MultiStepLR
     # milestones: [400000]
-    milestones: [10000]
+    # milestones: [10000]
+    milestones: [50000]
     gamma: 0.5
 
   # total_iter: 400000
-  total_iter: 10000
+  # total_iter: 10000
+  total_iter: 50000
   warmup_iter: -1  # no warm up
 
   # losses
@@ -142,7 +144,7 @@ train:
 # logging settings
 logger:
   print_freq: 100
-  save_checkpoint_freq: !!float 5e3
+  save_checkpoint_freq: !!float 5e3 
   use_tb_logger: true
   wandb:
     project: ~
