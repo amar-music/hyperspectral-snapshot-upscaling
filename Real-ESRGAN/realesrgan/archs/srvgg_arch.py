@@ -19,7 +19,7 @@ class SRVGGNetCompact(nn.Module):
         act_type (str): Activation type, options: 'relu', 'prelu', 'leakyrelu'. Default: prelu.
     """
 
-    def __init__(self, num_in_ch=3, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu'):
+    def __init__(self, num_in_ch=24, num_out_ch=3, num_feat=64, num_conv=16, upscale=4, act_type='prelu'):
         super(SRVGGNetCompact, self).__init__()
         self.num_in_ch = num_in_ch
         self.num_out_ch = num_out_ch

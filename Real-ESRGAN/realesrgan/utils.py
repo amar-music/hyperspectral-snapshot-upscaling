@@ -112,7 +112,13 @@ class RealESRGANer():
 
     def process(self):
         # model inference
+        # print("Before: " + str(self.img.shape))
+        # print(self.img.max())
         self.output = self.model(self.img)
+        # print("After: " + str(self.output.shape))
+        # print(self.output.max())
+        # print(" ")
+
 
     def tile_process(self):
         """It will first crop input images to tiles, and then process each tile.
@@ -189,6 +195,7 @@ class RealESRGANer():
             _, _, h, w = self.output.size()
             self.output = self.output[:, :, 0:h - self.pre_pad * self.scale, 0:w - self.pre_pad * self.scale]
         return self.output
+    
 
     @torch.no_grad()
     def enhance(self, img, outscale=None, alpha_upsampler='realesrgan'):
@@ -211,9 +218,13 @@ class RealESRGANer():
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
             if alpha_upsampler == 'realesrgan':
                 alpha = cv2.cvtColor(alpha, cv2.COLOR_GRAY2RGB)
+        elif img.shape[2] > 4:  # more than 4 channels
+            img_mode = 'numpy'
+            img = img
         else:
             img_mode = 'RGB'
             img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
 
         # ------------------- process image (without the alpha channel) ------------------- #
         self.pre_process(img)
@@ -221,9 +232,14 @@ class RealESRGANer():
             self.tile_process()
         else:
             self.process()
+            # print(self.output.shape)
         output_img = self.post_process()
         output_img = output_img.data.squeeze().float().cpu().clamp_(0, 1).numpy()
-        output_img = np.transpose(output_img[[2, 1, 0], :, :], (1, 2, 0))
+        print("Before: " + str(output_img.shape))
+        # output_img = np.transpose(output_img[[2, 1, 0], :, :], (1, 2, 0))
+        # output_img = np.transpose(output_img[[2, 1, 0], :, :], (1, 2, 0))
+        output_img = np.transpose(output_img, (1, 2, 0))
+        print("After: " + str(output_img.shape))
         if img_mode == 'L':
             output_img = cv2.cvtColor(output_img, cv2.COLOR_BGR2GRAY)
 
