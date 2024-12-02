@@ -12,3 +12,4 @@ commands.txt
 *.npy
 *.csv
 *.txt
+runs/

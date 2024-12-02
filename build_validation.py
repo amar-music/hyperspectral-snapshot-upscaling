@@ -2,10 +2,13 @@
 from preprocessing import preprocessFullHSI
 import glob
 import numpy as np
+import os
 
 SQUARE = True
 
 # Load all hdf5 files in a directory
+path = 'data/raw/FX10/'
+hdf5_names = os.listdir(path)
 hdf5_files = glob.glob('data/raw/FX10/*.hdf5')
 
 # Load 1 hdf5 file as test
@@ -44,7 +47,8 @@ else:
 
 
 for f in hdf5_files:
-    print("Processing file: " + f + "... (" + str(hdf5_files.index(f)+1) + "/" + str(len(hdf5_files)) + ")")
+    print(f"Processing file: {hdf5_names[hdf5_files.index(f)]}... ({str(hdf5_files.index(f)+1)}/{str(len(hdf5_files))})")
+    # print("Processing file: " + f + "... (" + str(hdf5_files.index(f)+1) + "/" + str(len(hdf5_files)) + ")")
     processed_img, wavelengths = preprocessFullHSI(path_to_hdf5=f, 
                                                    mtx_path=mtx_path, 
                                                    dist_path=dist_path, 
@@ -56,10 +60,10 @@ for f in hdf5_files:
                                                    ss_wavelengths=ss_wavelengths)
 
     # Save as array
-    np.save("data/processed/full_hsi/hr/" + f[14:-5] + ".npy", processed_img)
+    np.save("data/processed/full_hsi/hr/" + hdf5_names[:-5] + ".npy", processed_img)
 
 
-hr_wavelenghts = [666, 679, 690, 704, 715, 
+hr_wavelengths = [666, 679, 690, 704, 715, 
                   726, 739, 750, 764, 775, 
                   786, 800, 811, 822, 835, 
                   846, 860, 871, 882, 896, 

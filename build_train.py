@@ -1,12 +1,16 @@
 # Build validation set for training
 from preprocessing import preprocessSnapshot
 import glob
+import os
 import numpy as np
 
 SQUARE = True
 
 # Specify paths
-ss_files = glob.glob("data/raw/Snapshot/processed/train/**/")
+path = "data/raw/Snapshot/processed/test/"
+ss_names = os.listdir(path)
+ss_files = glob.glob("data/raw/Snapshot/processed/test/**/")
+
 
 # Specify camera calibration files
 mtx_path = 'data/raw/calibration/snapshot_matrix.npy'
@@ -23,7 +27,7 @@ else:
 
 
 for f in ss_files:
-    print("Processing file: " + f + "... (" + str(ss_files.index(f)+1) + "/" + str(len(ss_files)) + ")")
+    print(f"Processing file: {ss_names[ss_files.index(f)]}... ({str(ss_files.index(f)+1)}/{str(len(ss_files))})")
     processed_img, wavelengths = preprocessSnapshot(ss_path=f, 
                                                     mtx_path=mtx_path, 
                                                     dist_path=dist_path,
@@ -31,4 +35,4 @@ for f in ss_files:
                                                     ss_y_off=ss_y_off)
 
     # Save as array
-    np.save("data/processed/full_hsi/lr/" + f[34:-1] + ".npy", processed_img)
+    np.save("data/processed/full_hsi/test/bonus_lr/" + ss_names[ss_files.index(f)] + ".npy", processed_img)
