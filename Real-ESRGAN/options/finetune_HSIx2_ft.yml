@@ -1,5 +1,5 @@
 # general settings
-name: finetune_HSIx2_v4
+name: finetune_HSIx2_ft2
 model_type: RealESRGANModel
 scale: 2
 num_gpu: auto
@@ -50,14 +50,14 @@ network_g:
   type: RRDBNet
   num_in_ch: 24
   num_out_ch: 24
-  num_feat: 64
+  num_feat: 96
   num_block: 23
   num_grow_ch: 32
 
 network_d:
   type: UNetDiscriminatorSN
   num_in_ch: 24
-  num_feat: 64
+  num_feat: 96
   skip_connection: True
 
 # path
@@ -89,7 +89,7 @@ train:
     type: MultiStepLR
     # milestones: [400000]
     # milestones: [10000]
-    milestones: [50000]
+    milestones: [2500]
     gamma: 0.5
 
   # total_iter: 400000

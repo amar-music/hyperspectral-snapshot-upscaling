@@ -26,7 +26,7 @@ def main():
         default='HSI_grayimages_x2_5000',
         help=('Model names: RealESRGAN_x4plus | RealESRNet_x4plus | RealESRGAN_x4plus_anime_6B | RealESRGAN_x2plus | '
               'realesr-animevideov3 | realesr-general-x4v3'))
-    parser.add_argument('-o', '--output', type=str, default='results/sr', help='Output folder')
+    parser.add_argument('-o', '--output', type=str, default='results/c_sr', help='Output folder')
     parser.add_argument(
         '-dn',
         '--denoise_strength',
@@ -107,8 +107,20 @@ def main():
         model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
         netscale = 2
         file_url = ['none']
-    elif args.model_name == 'HSI_x2_50000_synth':  # x2 HSI
+    elif args.model_name == 'HSI_x2_synth_50000':  # x2 HSI
         model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_10000':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_v4_10000':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_ft2_40000':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=96, num_block=23, num_grow_ch=32, scale=2)
         netscale = 2
         file_url = ['none']
 
