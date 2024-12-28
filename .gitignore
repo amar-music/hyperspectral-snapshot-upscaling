@@ -13,3 +13,4 @@ commands.txt
 *.csv
 *.txt
 runs/
+visualizations/
