@@ -103,7 +103,7 @@ def main():
         model = RRDBNet(num_in_ch=3, num_out_ch=3, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
         netscale = 2
         file_url = ['none']
-    elif args.model_name == 'HSI_x2_50000':  # x2 HSI
+    elif args.model_name == 'HSI_x2_v3_50000':  # x2 HSI
         model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
         netscale = 2
         file_url = ['none']
@@ -121,6 +121,22 @@ def main():
         file_url = ['none']
     elif args.model_name == 'HSI_x2_ft2_40000':  # x2 HSI
         model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=96, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_val3_150000':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_val4_150000':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_val3_synth_50000':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
+        netscale = 2
+        file_url = ['none']
+    elif args.model_name == 'HSI_x2_val6_150000':  # x2 HSI
+        model = RRDBNet(num_in_ch=24, num_out_ch=24, num_feat=64, num_block=23, num_grow_ch=32, scale=2)
         netscale = 2
         file_url = ['none']
 
