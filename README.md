@@ -15,6 +15,7 @@ Guide for training real-world HSI models and inference
 - Place `results` folder in directory
 - Create Python virtual environment and run `pip install -r requirements.txt`
 - Move the modified `basicsr` folder into virtual environment folder: `VENV_NAME/lib/python3.XX/site-packages/`
+- Place `weights` folder into `Real-ESRGAN` folder
 
 ## Training
 ### Create dataset
