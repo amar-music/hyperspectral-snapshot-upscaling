@@ -104,9 +104,9 @@ class RealESRGANModel(SRGANModel):
                     clip=True,
                     rounds=False)
             # JPEG compression
-            jpeg_p = out.new_zeros(out.size(0)).uniform_(*self.opt['jpeg_range'])
-            out = torch.clamp(out, 0, 1)  # clamp to [0, 1], otherwise JPEGer will result in unpleasant artifacts
-            out = self.jpeger(out, quality=jpeg_p)
+            #jpeg_p = out.new_zeros(out.size(0)).uniform_(*self.opt['jpeg_range'])
+            #out = torch.clamp(out, 0, 1)  # clamp to [0, 1], otherwise JPEGer will result in unpleasant artifacts
+            #out = self.jpeger(out, quality=jpeg_p)
 
             # ----------------------- The second degradation process ----------------------- #
             # blur
@@ -149,24 +149,42 @@ class RealESRGANModel(SRGANModel):
                 out = F.interpolate(out, size=(ori_h // self.opt['scale'], ori_w // self.opt['scale']), mode=mode)
                 out = filter2D(out, self.sinc_kernel)
                 # JPEG compression
-                jpeg_p = out.new_zeros(out.size(0)).uniform_(*self.opt['jpeg_range2'])
-                out = torch.clamp(out, 0, 1)
-                out = self.jpeger(out, quality=jpeg_p)
+                #jpeg_p = out.new_zeros(out.size(0)).uniform_(*self.opt['jpeg_range2'])
+                #out = torch.clamp(out, 0, 1)
+                #out = self.jpeger(out, quality=jpeg_p)
+                out = out
             else:
                 # JPEG compression
-                jpeg_p = out.new_zeros(out.size(0)).uniform_(*self.opt['jpeg_range2'])
-                out = torch.clamp(out, 0, 1)
-                out = self.jpeger(out, quality=jpeg_p)
+                #jpeg_p = out.new_zeros(out.size(0)).uniform_(*self.opt['jpeg_range2'])
+                #out = torch.clamp(out, 0, 1)
+                #out = self.jpeger(out, quality=jpeg_p)
                 # resize back + the final sinc filter
                 mode = random.choice(['area', 'bilinear', 'bicubic'])
                 out = F.interpolate(out, size=(ori_h // self.opt['scale'], ori_w // self.opt['scale']), mode=mode)
                 out = filter2D(out, self.sinc_kernel)
+                out = out
+            
+
+            # Save the synthesized LQ image for visualization as HWC numpy array
+            # out_np = out[0].float().cpu().clamp_(0, 1).numpy()
+            # out_np = np.transpose(out_np, (1, 2, 0))
+            # out_np = np.round(out_np * 255.0).clip(0, 255).astype(np.uint8)
+            # # Normalize the array to range [0, 1]
+            # out_np = out_np / 255.0
+            # # Save the array
+            # np.save("lq_image.npy", out_np)
+
+
+
+
+
 
             # clamp and round
             self.lq = torch.clamp((out * 255.0).round(), 0, 255) / 255.
 
             # random crop
             gt_size = self.opt['gt_size']
+            
             (self.gt, self.gt_usm), self.lq = paired_random_crop([self.gt, self.gt_usm], self.lq, gt_size,
                                                                  self.opt['scale'])
 
