@@ -13,6 +13,8 @@ Guide for training real-world HSI models and inference
     - HR images: `data/processed/full_hsi_val/test/hr`
     - LR images: `data/processed/full_hsi_val/test/lr`
 - Place `results` folder in directory
+- Create Python virtual environment and run `pip install -r requirements.txt`
+- Move the modified `basicsr` folder into virtual environment folder: `VENV_NAME/lib/python3.XX/site-packages/`
 
 ## Training
 ### Create dataset
@@ -28,7 +30,6 @@ Guide for training real-world HSI models and inference
 - Modify `Real-ESRGAN/inference_realesrgan.py`
   - Copy and adapt `elif args.model_name == 'MODEL_NAME':` and the next two lines to reflect the new model
 - Place images from `data/processed/full_hsi_val/test/lr` in `Real-ESRGAN/inputs`
-- Run `python3 Real-ESRGAN/inference_realesrgan.py -n MODEL_NAME -i Real-ESRGAN/inputs`
+- Run `python3 Real-ESRGAN/inference_realesrgan.py -n MODEL_NAME -i Real-ESRGAN/inputs` to generate SR images
 - Copy generated upscaled images from `results/c_sr/` to `results/models/MODEL_NAME/sr/`
 - Run `evaluate_models.ipynb` and change `model_name = ...` appropriately
-
