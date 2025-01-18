@@ -1,3 +1,7 @@
+# GENERATE TIME: Mon Dec  9 11:49:15 2024
+# CMD:
+# Real-ESRGAN/realesrgan/train.py -opt Real-ESRGAN/options/finetune_HSIx2_val_synth.yml --auto_resume
+
 # general settings
 name: finetune_HSIx2_val3_synth
 model_type: RealESRGANModel
@@ -41,7 +45,7 @@ datasets:
     name: validation
     type: PairedImageDataset
     dataroot_gt: data/processed/full_hsi_val/val/hr/
-    dataroot_lq: data/processed/full_hsi_val/val/bi_240/
+    dataroot_lq: data/processed/full_hsi_val/val/synth_240/
     io_backend:
       type: disk
 
@@ -95,7 +99,7 @@ train:
 
   # total_iter: 400000
   # total_iter: 10000
-  total_iter: 150000
+  total_iter: 330000
   warmup_iter: -1  # no warm up
 
   # losses
