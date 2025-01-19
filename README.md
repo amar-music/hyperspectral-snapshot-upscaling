@@ -1,5 +1,5 @@
 # Hyperspectral Real-World Super-Resolution
-Guide for training real-world HSI models and inference
+Guide for training real-world HSI models and inference. Use `explore.ipynb` to explore the data and make visualizations 
 
 ## Setup
 - Place `data` folder in directory with the following structure:
